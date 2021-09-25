@@ -1,6 +1,6 @@
 package com.metea.moneyanalysis.endpoint;
 
-import com.metea.moneyanalysis.domain.User;
+import com.metea.moneyanalysis.dto.UserLoginDTO;
 import com.metea.moneyanalysis.dto.UserReadDTO;
 import com.metea.moneyanalysis.dto.UserWriteDTO;
 import com.metea.moneyanalysis.service.UserService;
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Create User", response = User.class)
+    @ApiOperation(value = "Create User", response = UserReadDTO.class)
     public ResponseEntity<UserReadDTO> createUser(@Valid @RequestBody UserWriteDTO user) {
         return ResponseEntity.ok(userService.save(user));
     }
@@ -36,5 +36,11 @@ public class UserController {
     @ApiOperation(value = "Delete User", response = Boolean.class)
     public ResponseEntity<Boolean> deleteUser(@PathVariable(value = "id") Long id) {
         return ResponseEntity.ok(userService.delete(id));
+    }
+
+    @PostMapping("/login")
+    @ApiOperation(value = "Login", response = Boolean.class)
+    public ResponseEntity<Boolean> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
+        return ResponseEntity.ok(userService.login(userLoginDTO));
     }
 }

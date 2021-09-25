@@ -3,6 +3,7 @@ package com.metea.moneyanalysis.service.impl;
 import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.User;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
+import com.metea.moneyanalysis.dto.UserLoginDTO;
 import com.metea.moneyanalysis.dto.UserReadDTO;
 import com.metea.moneyanalysis.dto.UserWriteDTO;
 import com.metea.moneyanalysis.repository.UserRepository;
@@ -13,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,18 @@ public class UserServiceImpl implements UserService {
     public Boolean delete(Long id) {
         userRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public Boolean login(UserLoginDTO userLoginDTO) {
+        final var userDB = userRepository.findByUsername(userLoginDTO.getUserName());
+        if (Objects.isNull(userDB)) {
+            throw new IllegalArgumentException("Username not found!");
+        }
+        if (userDB.getPassword().equals(userLoginDTO.getPassword())) {
+            return true;
+        }
+        return false;
     }
 
     private void CreateOperationMasterForNewUser(Long userId) {
