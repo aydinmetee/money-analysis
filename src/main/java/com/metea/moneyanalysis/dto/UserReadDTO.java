@@ -13,7 +13,7 @@ import java.util.Date;
 @ToString
 @EqualsAndHashCode
 public class UserReadDTO {
-    private String id;
+    private Long id;
     private String username;
     private String nameSurname;
     private String email;
