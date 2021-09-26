@@ -1,7 +1,7 @@
 package com.metea.moneyanalysis.service.impl;
 
 import com.metea.moneyanalysis.domain.BaseEntity;
-import com.metea.moneyanalysis.domain.User;
+import com.metea.moneyanalysis.domain.UserDetail;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import com.metea.moneyanalysis.dto.UserLoginDTO;
 import com.metea.moneyanalysis.dto.UserReadDTO;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserReadDTO save(UserWriteDTO userWriteDTO) {
-        var userDB = new User();
+        var userDB = new UserDetail();
         modelMapper.map(userWriteDTO, userDB);
         userDB.setCreatedBy("Admin");
         userDB.setCreatedAt(new Date());
@@ -74,9 +74,9 @@ public class UserServiceImpl implements UserService {
         operationMasterService.save(operationMaster);
     }
 
-    private UserReadDTO convertToDTO(User user) {
+    private UserReadDTO convertToDTO(UserDetail userDetail) {
         final var userReadDTO = new UserReadDTO();
-        modelMapper.map(user, userReadDTO);
+        modelMapper.map(userDetail, userReadDTO);
         return userReadDTO;
     }
 

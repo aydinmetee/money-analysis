@@ -21,5 +21,5 @@ public class OperationMaster extends BaseEntity {
 
     @JoinColumn(name = "user_id")
     @OneToOne(fetch = FetchType.LAZY)
-    private User user;
+    private UserDetail userDetail;
 }

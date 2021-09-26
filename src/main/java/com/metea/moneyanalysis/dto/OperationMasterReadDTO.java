@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Data
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class OperationMasterReadDTO extends OperationMasterWriteDTO {
     private Long id;
 

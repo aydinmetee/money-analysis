@@ -1,16 +1,21 @@
 package com.metea.moneyanalysis.domain;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @RequiredArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @Entity
-@Table(name = "user")
-public class User extends BaseEntity {
+@Table(name = "user_det")
+public class UserDetail extends BaseEntity {
 
     @Column(name = "username", length = 100, unique = true)
     private String username;

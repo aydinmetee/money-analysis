@@ -3,7 +3,7 @@ package com.metea.moneyanalysis.service.impl;
 import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.OperationDetail;
 import com.metea.moneyanalysis.domain.OperationMaster;
-import com.metea.moneyanalysis.domain.User;
+import com.metea.moneyanalysis.domain.UserDetail;
 import com.metea.moneyanalysis.dto.OperationMasterReadDTO;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import com.metea.moneyanalysis.repository.OperationMasterRepository;
@@ -36,7 +36,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     @Override
     public OperationMasterReadDTO save(OperationMasterWriteDTO operationMasterWriteDTO) {
         final var operationMaster = new OperationMaster();
-        operationMaster.setUser(findUser(operationMasterWriteDTO.getUserId()));
+        operationMaster.setUserDetail(findUser(operationMasterWriteDTO.getUserId()));
         operationMaster.setCreatedBy("Admin");
         operationMaster.setCreatedAt(new Date());
         operationMaster.setStatus(BaseEntity.Status.NEW);
@@ -56,7 +56,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
 
     @Override
     public List<OperationMasterReadDTO> getAllByUserId(Long userId) {
-        final var operationMasters = operationMasterRepository.findOperationMastersByUserId(userId);
+        final var operationMasters = operationMasterRepository.findOperationMastersByUserDetailId(userId);
         if (operationMasters.isEmpty()) {
             throw new IllegalArgumentException("User have not operation!");
         }
@@ -90,17 +90,17 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     private OperationMasterReadDTO prepareDTO(OperationMaster operationMaster) {
         final var operationMasterReadDTO = new OperationMasterReadDTO();
         modelMapper.map(operationMaster, operationMasterReadDTO);
-        operationMasterReadDTO.setUserId(operationMaster.getUser().getId());
-        operationMasterReadDTO.setNameSurname(operationMaster.getUser().getNameSurname());
+        operationMasterReadDTO.setUserId(operationMaster.getUserDetail().getId());
+        operationMasterReadDTO.setNameSurname(operationMaster.getUserDetail().getNameSurname());
         return operationMasterReadDTO;
     }
 
-    private User findUser(Long id) {
+    private UserDetail findUser(Long id) {
         final var userDTO = userService.getById(id);
         if (Objects.isNull(userDTO)) {
             throw new IllegalArgumentException("User Not Found!");
         }
-        final var user = new User();
+        final var user = new UserDetail();
         modelMapper.map(userDTO, user);
         return user;
     }
