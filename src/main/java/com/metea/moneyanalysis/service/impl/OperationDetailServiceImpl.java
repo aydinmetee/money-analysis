@@ -4,10 +4,12 @@ import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.OperationDetail;
 import com.metea.moneyanalysis.dto.OperationDetailReadDTO;
 import com.metea.moneyanalysis.dto.OperationDetailWriteDTO;
+import com.metea.moneyanalysis.dto.UserReadDTO;
 import com.metea.moneyanalysis.repository.OperationDetailRepository;
 import com.metea.moneyanalysis.repository.OperationMasterRepository;
 import com.metea.moneyanalysis.service.OperationDetailService;
 import com.metea.moneyanalysis.service.OperationMasterService;
+import com.metea.moneyanalysis.util.SessionContext;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -116,5 +118,10 @@ public class OperationDetailServiceImpl implements OperationDetailService {
         calendar.setTime(date);
         calendar.add(Calendar.DATE, -30);
         return calendar.getTime();
+    }
+
+    private UserReadDTO getSessionData(){
+        var sessionContext = new SessionContext();
+        return sessionContext.getUser();
     }
 }

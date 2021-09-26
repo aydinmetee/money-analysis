@@ -1,9 +1,6 @@
 package com.metea.moneyanalysis.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -11,9 +8,11 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserLoginDTO {
     @NotEmpty
-    private String userName;
+    private String username;
     @NotEmpty
     private String password;
 }

@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean login(UserLoginDTO userLoginDTO) {
-        final var userDB = userRepository.findByUsername(userLoginDTO.getUserName());
+        final var userDB = userRepository.findByUsername(userLoginDTO.getUsername());
         if (Objects.isNull(userDB)) {
             throw new IllegalArgumentException("Username not found!");
         }

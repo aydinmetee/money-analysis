@@ -1,16 +1,12 @@
 package com.metea.moneyanalysis.endpoint;
 
-import com.metea.moneyanalysis.dto.UserLoginDTO;
 import com.metea.moneyanalysis.dto.UserReadDTO;
-import com.metea.moneyanalysis.dto.UserWriteDTO;
 import com.metea.moneyanalysis.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -26,21 +22,10 @@ public class UserController {
         return ResponseEntity.ok(userService.getById(id));
     }
 
-    @PostMapping
-    @ApiOperation(value = "Create User", response = UserReadDTO.class)
-    public ResponseEntity<UserReadDTO> createUser(@Valid @RequestBody UserWriteDTO user) {
-        return ResponseEntity.ok(userService.save(user));
-    }
-
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Delete User", response = Boolean.class)
     public ResponseEntity<Boolean> deleteUser(@PathVariable(value = "id") Long id) {
         return ResponseEntity.ok(userService.delete(id));
     }
 
-    @PostMapping("/login")
-    @ApiOperation(value = "Login", response = Boolean.class)
-    public ResponseEntity<Boolean> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
-        return ResponseEntity.ok(userService.login(userLoginDTO));
-    }
 }

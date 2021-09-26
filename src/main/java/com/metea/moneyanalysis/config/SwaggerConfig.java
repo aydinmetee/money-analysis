@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class SwaggerConfig {
 
     ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("Hotelium API Reference").version("1.0.0").build();
+        return new ApiInfoBuilder().title("Money Analysis API Reference").version("1.0.0").build();
     }
 
     @Bean
