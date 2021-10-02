@@ -29,4 +29,13 @@ public class UserDetail extends BaseEntity {
     @Column(name = "email", length = 100)
     private String email;
 
+    @Column(name = "language", length = 2)
+    private Language language;
+
+
+    public enum Language {
+        TR,
+        EN
+    }
+
 }

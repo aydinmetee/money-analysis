@@ -6,6 +6,7 @@ import com.metea.moneyanalysis.domain.OperationMaster;
 import com.metea.moneyanalysis.domain.UserDetail;
 import com.metea.moneyanalysis.dto.OperationMasterSearchCriteriaDTO;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
+import com.metea.moneyanalysis.exception.ServiceExecutionException;
 import com.metea.moneyanalysis.repository.OperationMasterRepository;
 import com.metea.moneyanalysis.service.OperationMasterService;
 import com.metea.moneyanalysis.service.UserService;
@@ -48,7 +49,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     public OperationMaster getById(Long id) {
         final var operationMaster = operationMasterRepository.findById(id);
         if (operationMaster.isEmpty()) {
-            throw new IllegalArgumentException("Operation Not Found!");
+            throw new ServiceExecutionException("Operation Not Found!");
         }
         return operationMaster.get();
     }
@@ -58,7 +59,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
         final var operationMaster = operationMasterRepository
                 .findOperationMasterByUserDetailId(userService.getSessionInfo().getId());
         if (Objects.isNull(operationMaster)) {
-            throw new IllegalArgumentException("User have not operation!");
+            throw new ServiceExecutionException("User have not operation!");
         }
         return operationMaster;
     }
@@ -68,7 +69,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
         final var operationMaster = operationMasterRepository
                 .findById(operationDetail.getOperationMaster().getId());
         if (operationMaster.isEmpty()) {
-            throw new IllegalArgumentException("Kullanıcı bulunamadı");
+            throw new ServiceExecutionException("Kullanıcı bulunamadı");
         }
         if (operationDetail.getOperationType().equals(OperationDetail.OperationType.INCOME)) {
             operationMaster.get().setTotalAmount(operationMaster.get().getTotalAmount().add(operationDetail.getValue()));
@@ -93,7 +94,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     private UserDetail findUser(Long id) {
         final var userDTO = userService.getById(id);
         if (Objects.isNull(userDTO)) {
-            throw new IllegalArgumentException("User Not Found!");
+            throw new ServiceExecutionException("User Not Found!");
         }
         final var user = new UserDetail();
         modelMapper.map(userDTO, user);

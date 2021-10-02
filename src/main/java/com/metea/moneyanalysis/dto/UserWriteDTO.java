@@ -1,5 +1,6 @@
 package com.metea.moneyanalysis.dto;
 
+import com.metea.moneyanalysis.domain.UserDetail;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,4 +15,5 @@ public class UserWriteDTO {
     private String username;
     private String nameSurname;
     private String email;
+    private UserDetail.Language language;
 }

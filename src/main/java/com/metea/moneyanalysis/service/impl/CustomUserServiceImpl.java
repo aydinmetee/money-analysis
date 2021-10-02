@@ -1,5 +1,6 @@
 package com.metea.moneyanalysis.service.impl;
 
+import com.metea.moneyanalysis.exception.ServiceExecutionException;
 import com.metea.moneyanalysis.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -20,7 +21,7 @@ public class CustomUserServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final var user = userRepository.findByUsername(username);
         if (Objects.isNull(user)) {
-            throw new UsernameNotFoundException("Hatalı giriş yaptınız.");
+            throw new ServiceExecutionException("Hatalı giriş yaptınız.");
         }
         return new User(user.getUsername(), user.getPassword(), new ArrayList<>());
     }

@@ -4,6 +4,7 @@ import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.OperationDetail;
 import com.metea.moneyanalysis.dto.OperationDetailSearchCriteriaDTO;
 import com.metea.moneyanalysis.dto.OperationDetailWriteDTO;
+import com.metea.moneyanalysis.exception.ServiceExecutionException;
 import com.metea.moneyanalysis.repository.OperationDetailRepository;
 import com.metea.moneyanalysis.repository.OperationMasterRepository;
 import com.metea.moneyanalysis.service.OperationDetailService;
@@ -54,7 +55,7 @@ public class OperationDetailServiceImpl implements OperationDetailService {
     public OperationDetail getById(Long id) {
         final var operationDetail = operationDetailRepository.findById(id);
         if (operationDetail.isEmpty()) {
-            throw new IllegalArgumentException("Operation Not Found!");
+            throw new ServiceExecutionException("Operation Not Found!");
         }
         return operationDetail.get();
     }
@@ -63,7 +64,7 @@ public class OperationDetailServiceImpl implements OperationDetailService {
     public List<OperationDetail> getAllByMasterId(Long masterId) {
         final var operationDetails = operationDetailRepository.findOperationDetailsByOperationMasterId(masterId);
         if (operationDetails.isEmpty()) {
-            throw new IllegalArgumentException("User have not operation!");
+            throw new ServiceExecutionException("User have not operation!");
         }
         return operationDetails;
     }
@@ -97,7 +98,7 @@ public class OperationDetailServiceImpl implements OperationDetailService {
         final var details = operationDetailRepository.findAllByOperationMasterId(
                 PageRequest.of(0, 100, Sort.by("createdAt").descending()), masterId);
         if (!details.hasContent()) {
-            throw new IllegalArgumentException("Kayıt bulunamadı.");
+            throw new ServiceExecutionException("Kayıt bulunamadı.");
         }
         return details;
     }
@@ -107,7 +108,7 @@ public class OperationDetailServiceImpl implements OperationDetailService {
         final var details = operationDetailRepository
                 .findAll(filter.OperationMasterSearchCriteriaFieldMapper(filter), pageable);
         if (!details.hasContent()) {
-            throw new IllegalArgumentException("Kayıt bulunamadı.");
+            throw new ServiceExecutionException("Kayıt bulunamadı.");
         }
         return details;
     }

@@ -5,9 +5,11 @@ import com.metea.moneyanalysis.domain.UserDetail;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import com.metea.moneyanalysis.dto.UserLoginDTO;
 import com.metea.moneyanalysis.dto.UserWriteDTO;
+import com.metea.moneyanalysis.exception.ServiceExecutionException;
 import com.metea.moneyanalysis.repository.UserRepository;
 import com.metea.moneyanalysis.service.OperationMasterService;
 import com.metea.moneyanalysis.service.UserService;
+import com.metea.moneyanalysis.util.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final OperationMasterService operationMasterService;
     private final ModelMapper modelMapper;
+    private final MessageUtil messageUtil;
 
     @Override
     public UserDetail save(UserWriteDTO userWriteDTO) {
@@ -41,7 +44,7 @@ public class UserServiceImpl implements UserService {
     public UserDetail getById(Long id) {
         final var user = userRepository.findById(id);
         if (user.isEmpty()) {
-            throw new IllegalArgumentException("User not found!");
+            throw new ServiceExecutionException(messageUtil.get("userService.notFound.exception"));
         }
         return user.get();
     }
@@ -61,7 +64,7 @@ public class UserServiceImpl implements UserService {
     public Boolean login(UserLoginDTO userLoginDTO) {
         final var userDB = userRepository.findByUsername(userLoginDTO.getUsername());
         if (Objects.isNull(userDB)) {
-            throw new IllegalArgumentException("Username not found!");
+            throw new ServiceExecutionException("Username not found!");
         }
         return userDB.getPassword().equals(userLoginDTO.getPassword());
     }
