@@ -9,7 +9,6 @@ import com.metea.moneyanalysis.service.OperationDetailService;
 import com.metea.moneyanalysis.service.OperationMasterService;
 import com.metea.moneyanalysis.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,7 +25,6 @@ public class OperationDetailServiceImpl implements OperationDetailService {
     private final OperationDetailRepository operationDetailRepository;
     private final OperationMasterRepository operationMasterRepository;
     private final OperationMasterService operationMasterService;
-    private final ModelMapper modelMapper;
     private final UserService userService;
 
     @Override
@@ -77,19 +75,17 @@ public class OperationDetailServiceImpl implements OperationDetailService {
     @Override
     public List<OperationDetail> getAllWeekly(Long masterId) {
         final var currentDate = new Date();
-        final var operationDetails = operationDetailRepository
+        return operationDetailRepository
                 .findOperationDetailsByCreatedAtBetweenAndOperationMasterId(
                         getDateBeforeWeekAgo(currentDate), currentDate, masterId);
-        return operationDetails;
     }
 
     @Override
     public List<OperationDetail> getAllMonthly(Long masterId) {
         final var currentDate = new Date();
-        final var operationDetails = operationDetailRepository
+        return operationDetailRepository
                 .findOperationDetailsByCreatedAtBetweenAndOperationMasterId(
                         getDateBeforeMonthAgo(currentDate), currentDate, masterId);
-        return operationDetails;
     }
 
     @Override

@@ -63,10 +63,7 @@ public class UserServiceImpl implements UserService {
         if (Objects.isNull(userDB)) {
             throw new IllegalArgumentException("Username not found!");
         }
-        if (userDB.getPassword().equals(userLoginDTO.getPassword())) {
-            return true;
-        }
-        return false;
+        return userDB.getPassword().equals(userLoginDTO.getPassword());
     }
 
     @Override
