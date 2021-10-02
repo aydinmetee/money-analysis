@@ -4,13 +4,14 @@ import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.UserDetail;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import com.metea.moneyanalysis.dto.UserLoginDTO;
-import com.metea.moneyanalysis.dto.UserReadDTO;
 import com.metea.moneyanalysis.dto.UserWriteDTO;
 import com.metea.moneyanalysis.repository.UserRepository;
 import com.metea.moneyanalysis.service.OperationMasterService;
 import com.metea.moneyanalysis.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
 
     @Override
-    public UserReadDTO save(UserWriteDTO userWriteDTO) {
+    public UserDetail save(UserWriteDTO userWriteDTO) {
         var userDB = new UserDetail();
         modelMapper.map(userWriteDTO, userDB);
         userDB.setCreatedBy("Admin");
@@ -33,21 +34,21 @@ public class UserServiceImpl implements UserService {
         userDB.setStatus(BaseEntity.Status.NEW);
         userDB = userRepository.save(userDB);
         CreateOperationMasterForNewUser(userDB.getId());
-        return convertToDTO(userDB);
+        return userDB;
     }
 
     @Override
-    public UserReadDTO getById(Long id) {
+    public UserDetail getById(Long id) {
         final var user = userRepository.findById(id);
         if (user.isEmpty()) {
             throw new IllegalArgumentException("User not found!");
         }
-        return convertToDTO(user.get());
+        return user.get();
     }
 
     @Override
-    public UserReadDTO getByUsername(String username) {
-        return convertToDTO(userRepository.findByUsername(username));
+    public UserDetail getByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override
@@ -68,16 +69,17 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Override
+    public UserDetail getSessionInfo() {
+        final var userinfo = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return getByUsername(userinfo.getUsername());
+    }
+
     private void CreateOperationMasterForNewUser(Long userId) {
         final var operationMaster = new OperationMasterWriteDTO();
         operationMaster.setUserId(userId);
         operationMasterService.save(operationMaster);
     }
 
-    private UserReadDTO convertToDTO(UserDetail userDetail) {
-        final var userReadDTO = new UserReadDTO();
-        modelMapper.map(userDetail, userReadDTO);
-        return userReadDTO;
-    }
 
 }

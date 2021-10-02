@@ -2,19 +2,19 @@ package com.metea.moneyanalysis.service.impl;
 
 import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.OperationDetail;
-import com.metea.moneyanalysis.dto.OperationDetailReadDTO;
 import com.metea.moneyanalysis.dto.OperationDetailWriteDTO;
-import com.metea.moneyanalysis.dto.UserReadDTO;
 import com.metea.moneyanalysis.repository.OperationDetailRepository;
 import com.metea.moneyanalysis.repository.OperationMasterRepository;
 import com.metea.moneyanalysis.service.OperationDetailService;
 import com.metea.moneyanalysis.service.OperationMasterService;
-import com.metea.moneyanalysis.util.SessionContext;
+import com.metea.moneyanalysis.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,9 +27,10 @@ public class OperationDetailServiceImpl implements OperationDetailService {
     private final OperationMasterRepository operationMasterRepository;
     private final OperationMasterService operationMasterService;
     private final ModelMapper modelMapper;
+    private final UserService userService;
 
     @Override
-    public OperationDetailReadDTO save(OperationDetailWriteDTO operationDetailWriteDTO) {
+    public OperationDetail save(OperationDetailWriteDTO operationDetailWriteDTO) {
         final var master = operationMasterRepository
                 .findById(operationDetailWriteDTO.getMasterId());
         if (master.isEmpty()) {
@@ -46,25 +47,25 @@ public class OperationDetailServiceImpl implements OperationDetailService {
         operationMasterService.calculateAmount(operationDetail);
         operationDetailRepository.save(operationDetail);
 
-        return prepareDTO(operationDetail);
+        return operationDetail;
     }
 
     @Override
-    public OperationDetailReadDTO getById(Long id) {
+    public OperationDetail getById(Long id) {
         final var operationDetail = operationDetailRepository.findById(id);
         if (operationDetail.isEmpty()) {
             throw new IllegalArgumentException("Operation Not Found!");
         }
-        return prepareDTO(operationDetail.get());
+        return operationDetail.get();
     }
 
     @Override
-    public List<OperationDetailReadDTO> getAllByMasterId(Long masterId) {
+    public List<OperationDetail> getAllByMasterId(Long masterId) {
         final var operationDetails = operationDetailRepository.findOperationDetailsByOperationMasterId(masterId);
         if (operationDetails.isEmpty()) {
             throw new IllegalArgumentException("User have not operation!");
         }
-        return prepareList(operationDetails);
+        return operationDetails;
     }
 
     @Override
@@ -74,36 +75,33 @@ public class OperationDetailServiceImpl implements OperationDetailService {
     }
 
     @Override
-    public List<OperationDetailReadDTO> getAllWeekly(Long masterId) {
+    public List<OperationDetail> getAllWeekly(Long masterId) {
         final var currentDate = new Date();
         final var operationDetails = operationDetailRepository
                 .findOperationDetailsByCreatedAtBetweenAndOperationMasterId(
                         getDateBeforeWeekAgo(currentDate), currentDate, masterId);
-        return prepareList(operationDetails);
+        return operationDetails;
     }
 
     @Override
-    public List<OperationDetailReadDTO> getAllMonthly(Long masterId) {
+    public List<OperationDetail> getAllMonthly(Long masterId) {
         final var currentDate = new Date();
         final var operationDetails = operationDetailRepository
                 .findOperationDetailsByCreatedAtBetweenAndOperationMasterId(
                         getDateBeforeMonthAgo(currentDate), currentDate, masterId);
-        return prepareList(operationDetails);
+        return operationDetails;
     }
 
-    private OperationDetailReadDTO prepareDTO(OperationDetail operationDetail) {
-        final var operationDetailDTO = new OperationDetailReadDTO();
-        modelMapper.map(operationDetail, operationDetailDTO);
-        operationDetailDTO.setMasterId(operationDetail.getOperationMaster().getId());
-        operationDetailDTO.setTotalAmount(operationDetail.getOperationMaster().getTotalAmount());
-        return operationDetailDTO;
-
-    }
-
-    private List<OperationDetailReadDTO> prepareList(List<OperationDetail> operationDetailList) {
-        final var dtoList = new ArrayList<OperationDetailReadDTO>();
-        operationDetailList.forEach(operationDetail -> dtoList.add(prepareDTO(operationDetail)));
-        return dtoList;
+    @Override
+    public Page<OperationDetail> getAllRecordByUser() {
+        final var masterId = operationMasterRepository
+                .findOperationMastersByUserDetailId(userService.getSessionInfo().getId()).get(0).getId();
+        final var details = operationDetailRepository.findAllByOperationMasterId(
+                PageRequest.of(0, 100, Sort.by("createdAt").descending()), masterId);
+        if (!details.hasContent()) {
+            throw new IllegalArgumentException("Kayıt bulunamadı.");
+        }
+        return details;
     }
 
     private Date getDateBeforeWeekAgo(Date date) {
@@ -118,10 +116,5 @@ public class OperationDetailServiceImpl implements OperationDetailService {
         calendar.setTime(date);
         calendar.add(Calendar.DATE, -30);
         return calendar.getTime();
-    }
-
-    private UserReadDTO getSessionData(){
-        var sessionContext = new SessionContext();
-        return sessionContext.getUser();
     }
 }

@@ -4,17 +4,17 @@ import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.OperationDetail;
 import com.metea.moneyanalysis.domain.OperationMaster;
 import com.metea.moneyanalysis.domain.UserDetail;
-import com.metea.moneyanalysis.dto.OperationMasterReadDTO;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import com.metea.moneyanalysis.repository.OperationMasterRepository;
 import com.metea.moneyanalysis.service.OperationMasterService;
 import com.metea.moneyanalysis.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,35 +34,32 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     }
 
     @Override
-    public OperationMasterReadDTO save(OperationMasterWriteDTO operationMasterWriteDTO) {
+    public OperationMaster save(OperationMasterWriteDTO operationMasterWriteDTO) {
         final var operationMaster = new OperationMaster();
         operationMaster.setUserDetail(findUser(operationMasterWriteDTO.getUserId()));
         operationMaster.setCreatedBy("Admin");
         operationMaster.setCreatedAt(new Date());
         operationMaster.setStatus(BaseEntity.Status.NEW);
         operationMaster.setTotalAmount(BigDecimal.ZERO);
-        operationMasterRepository.save(operationMaster);
-        return prepareDTO(operationMaster);
+        return operationMasterRepository.save(operationMaster);
     }
 
     @Override
-    public OperationMasterReadDTO getById(Long id) {
+    public OperationMaster getById(Long id) {
         final var operationMaster = operationMasterRepository.findById(id);
         if (operationMaster.isEmpty()) {
             throw new IllegalArgumentException("Operation Not Found!");
         }
-        return prepareDTO(operationMaster.get());
+        return operationMaster.get();
     }
 
     @Override
-    public List<OperationMasterReadDTO> getAllByUserId(Long userId) {
+    public List<OperationMaster> getAllByUserId(Long userId) {
         final var operationMasters = operationMasterRepository.findOperationMastersByUserDetailId(userId);
         if (operationMasters.isEmpty()) {
             throw new IllegalArgumentException("User have not operation!");
         }
-        final var dtoList = new ArrayList<OperationMasterReadDTO>();
-        operationMasters.forEach(operationMaster -> dtoList.add(prepareDTO(operationMaster)));
-        return dtoList;
+        return operationMasters;
     }
 
     @Override
@@ -87,12 +84,9 @@ public class OperationMasterServiceImpl implements OperationMasterService {
         return true;
     }
 
-    private OperationMasterReadDTO prepareDTO(OperationMaster operationMaster) {
-        final var operationMasterReadDTO = new OperationMasterReadDTO();
-        modelMapper.map(operationMaster, operationMasterReadDTO);
-        operationMasterReadDTO.setUserId(operationMaster.getUserDetail().getId());
-        operationMasterReadDTO.setNameSurname(operationMaster.getUserDetail().getNameSurname());
-        return operationMasterReadDTO;
+    @Override
+    public Page<OperationMaster> search(Pageable pageable) {
+        return operationMasterRepository.findAll(pageable);
     }
 
     private UserDetail findUser(Long id) {
