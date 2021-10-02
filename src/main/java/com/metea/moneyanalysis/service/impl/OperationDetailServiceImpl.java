@@ -95,7 +95,7 @@ public class OperationDetailServiceImpl implements OperationDetailService {
     @Override
     public Page<OperationDetail> getAllRecordByUser() {
         final var masterId = operationMasterRepository
-                .findOperationMastersByUserDetailId(userService.getSessionInfo().getId()).get(0).getId();
+                .findOperationMasterByUserDetailId(userService.getSessionInfo().getId()).getId();
         final var details = operationDetailRepository.findAllByOperationMasterId(
                 PageRequest.of(0, 100, Sort.by("createdAt").descending()), masterId);
         if (!details.hasContent()) {

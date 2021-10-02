@@ -11,9 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class OperationMasterServiceViewImpl implements OperationMasterServiceView {
@@ -32,9 +29,8 @@ public class OperationMasterServiceViewImpl implements OperationMasterServiceVie
     }
 
     @Override
-    public List<OperationMasterReadDTO> getAllByUserId(Long userId) {
-        return operationMasterService.getAllByUserId(userId).stream()
-                .map(this::convertToDto).collect(Collectors.toList());
+    public OperationMasterReadDTO getMasterByUser() {
+        return convertToDto(operationMasterService.getMasterByUser());
     }
 
     @Override

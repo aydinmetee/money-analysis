@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -54,12 +53,13 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     }
 
     @Override
-    public List<OperationMaster> getAllByUserId(Long userId) {
-        final var operationMasters = operationMasterRepository.findOperationMastersByUserDetailId(userId);
-        if (operationMasters.isEmpty()) {
+    public OperationMaster getMasterByUser() {
+        final var operationMaster = operationMasterRepository
+                .findOperationMasterByUserDetailId(userService.getSessionInfo().getId());
+        if (Objects.isNull(operationMaster)) {
             throw new IllegalArgumentException("User have not operation!");
         }
-        return operationMasters;
+        return operationMaster;
     }
 
     @Override

@@ -6,10 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
 
 public interface OperationMasterRepository extends JpaRepository<OperationMaster, Long>, CrudRepository<OperationMaster, Long> {
-    List<OperationMaster> findOperationMastersByUserDetailId(Long userId);
+    OperationMaster findOperationMasterByUserDetailId(Long userId);
 
     Page<OperationMaster> findAll(Pageable pageable);
 
