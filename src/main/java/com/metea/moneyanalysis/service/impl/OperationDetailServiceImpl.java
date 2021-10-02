@@ -2,6 +2,7 @@ package com.metea.moneyanalysis.service.impl;
 
 import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.OperationDetail;
+import com.metea.moneyanalysis.dto.OperationDetailSearchCriteriaDTO;
 import com.metea.moneyanalysis.dto.OperationDetailWriteDTO;
 import com.metea.moneyanalysis.repository.OperationDetailRepository;
 import com.metea.moneyanalysis.repository.OperationMasterRepository;
@@ -11,6 +12,7 @@ import com.metea.moneyanalysis.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -94,6 +96,16 @@ public class OperationDetailServiceImpl implements OperationDetailService {
                 .findOperationMasterByUserDetailId(userService.getSessionInfo().getId()).getId();
         final var details = operationDetailRepository.findAllByOperationMasterId(
                 PageRequest.of(0, 100, Sort.by("createdAt").descending()), masterId);
+        if (!details.hasContent()) {
+            throw new IllegalArgumentException("Kayıt bulunamadı.");
+        }
+        return details;
+    }
+
+    @Override
+    public Page<OperationDetail> search(OperationDetailSearchCriteriaDTO filter, Pageable pageable) {
+        final var details = operationDetailRepository
+                .findAll(filter.OperationMasterSearchCriteriaFieldMapper(filter), pageable);
         if (!details.hasContent()) {
             throw new IllegalArgumentException("Kayıt bulunamadı.");
         }

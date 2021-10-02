@@ -2,12 +2,14 @@ package com.metea.moneyanalysis.serviceview.impl;
 
 import com.metea.moneyanalysis.domain.OperationDetail;
 import com.metea.moneyanalysis.dto.OperationDetailReadDTO;
+import com.metea.moneyanalysis.dto.OperationDetailSearchCriteriaDTO;
 import com.metea.moneyanalysis.dto.OperationDetailWriteDTO;
 import com.metea.moneyanalysis.service.OperationDetailService;
 import com.metea.moneyanalysis.serviceview.OperationDetailServiceView;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,6 +57,11 @@ public class OperationDetailServiceViewImpl implements OperationDetailServiceVie
     @Override
     public Page<OperationDetailReadDTO> getAllRecordByUser() {
         return operationDetailService.getAllRecordByUser().map(this::convertToDto);
+    }
+
+    @Override
+    public Page<OperationDetailReadDTO> search(OperationDetailSearchCriteriaDTO filter, Pageable pageable) {
+        return operationDetailService.search(filter, pageable).map(this::convertToDto);
     }
 
     private OperationDetailReadDTO convertToDto(OperationDetail operationDetail) {

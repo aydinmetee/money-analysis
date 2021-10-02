@@ -1,6 +1,7 @@
 package com.metea.moneyanalysis.serviceview;
 
 import com.metea.moneyanalysis.dto.OperationMasterReadDTO;
+import com.metea.moneyanalysis.dto.OperationMasterSearchCriteriaDTO;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,5 +15,5 @@ public interface OperationMasterServiceView {
 
     Boolean delete(Long id);
 
-    Page<OperationMasterReadDTO> search(Pageable pageable);
+    Page<OperationMasterReadDTO> search(OperationMasterSearchCriteriaDTO filter, Pageable pageable);
 }

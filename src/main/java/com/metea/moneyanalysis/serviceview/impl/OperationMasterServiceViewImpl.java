@@ -2,6 +2,7 @@ package com.metea.moneyanalysis.serviceview.impl;
 
 import com.metea.moneyanalysis.domain.OperationMaster;
 import com.metea.moneyanalysis.dto.OperationMasterReadDTO;
+import com.metea.moneyanalysis.dto.OperationMasterSearchCriteriaDTO;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import com.metea.moneyanalysis.service.OperationMasterService;
 import com.metea.moneyanalysis.serviceview.OperationMasterServiceView;
@@ -39,8 +40,8 @@ public class OperationMasterServiceViewImpl implements OperationMasterServiceVie
     }
 
     @Override
-    public Page<OperationMasterReadDTO> search(Pageable pageable) {
-        return operationMasterService.search(pageable).map(this::convertToDto);
+    public Page<OperationMasterReadDTO> search(OperationMasterSearchCriteriaDTO filter, Pageable pageable) {
+        return operationMasterService.search(filter, pageable).map(this::convertToDto);
     }
 
     private OperationMasterReadDTO convertToDto(OperationMaster operationMaster) {

@@ -1,9 +1,6 @@
 package com.metea.moneyanalysis.endpoint;
 
-import com.metea.moneyanalysis.dto.OperationDetailReadDTO;
-import com.metea.moneyanalysis.dto.OperationDetailWriteDTO;
-import com.metea.moneyanalysis.dto.OperationMasterReadDTO;
-import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
+import com.metea.moneyanalysis.dto.*;
 import com.metea.moneyanalysis.serviceview.OperationDetailServiceView;
 import com.metea.moneyanalysis.serviceview.OperationMasterServiceView;
 import io.swagger.annotations.Api;
@@ -11,7 +8,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,12 +47,12 @@ public class OperationController {
         return ResponseEntity.ok(operationMasterService.getMasterByUser());
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     @ApiOperation(value = "Search Operation Master", response = Page.class)
-    public ResponseEntity<Page<OperationMasterReadDTO>> search(@RequestParam(defaultValue = "0") int page,
-                                                               @RequestParam(defaultValue = "3") int size,
-                                                               @RequestParam(defaultValue = "totalAmount,desc") Sort sort) {
-        return ResponseEntity.ok(operationMasterService.search(PageRequest.of(page, size, sort)));
+    public ResponseEntity<Page<OperationMasterReadDTO>> search(@RequestBody() OperationMasterSearchCriteriaDTO filter,
+                                                               @RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "3") int size) {
+        return ResponseEntity.ok(operationMasterService.search(filter, PageRequest.of(page, size)));
     }
 
     @GetMapping("/find-all-details-by-user")
@@ -75,7 +71,7 @@ public class OperationController {
     @PostMapping("/{masterId}/detail")
     @ApiOperation(value = "Create Operation Detail", response = OperationDetailReadDTO.class)
     public ResponseEntity<OperationDetailReadDTO> createDetail(@PathVariable(value = "masterId") Long masterId,
-                                                             @Valid @RequestBody OperationDetailWriteDTO operationDetailWriteDTO) {
+                                                               @Valid @RequestBody OperationDetailWriteDTO operationDetailWriteDTO) {
         operationDetailWriteDTO.setMasterId(masterId);
         return ResponseEntity.ok(operationDetailService.save(operationDetailWriteDTO));
     }
@@ -83,7 +79,7 @@ public class OperationController {
     @DeleteMapping("/{masterId}/detail/{id}")
     @ApiOperation(value = "Delete Operation Detail", response = Boolean.class)
     public ResponseEntity<Boolean> deleteDetail(@PathVariable(value = "masterId") Long masterId,
-                                              @PathVariable(value = "id") Long id) {
+                                                @PathVariable(value = "id") Long id) {
         return ResponseEntity.ok(operationDetailService.delete(id));
     }
 
@@ -103,5 +99,15 @@ public class OperationController {
     @ApiOperation(value = "Get By Monthly", response = List.class)
     public ResponseEntity<List<OperationDetailReadDTO>> getByMonthly(@PathVariable(value = "masterId") Long masterId) {
         return ResponseEntity.ok(operationDetailService.getAllMonthly(masterId));
+    }
+
+    @PostMapping("/{masterId}/search")
+    @ApiOperation(value = "Search Operation Details", response = Page.class)
+    public ResponseEntity<Page<OperationDetailReadDTO>> searchDetails(@RequestBody() OperationDetailSearchCriteriaDTO filter,
+                                                                      @RequestParam() Long masterId,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "3") int size) {
+        filter.setMasterId(masterId);
+        return ResponseEntity.ok(operationDetailService.search(filter, PageRequest.of(page, size)));
     }
 }

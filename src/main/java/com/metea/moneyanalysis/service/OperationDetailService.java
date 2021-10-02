@@ -1,9 +1,10 @@
 package com.metea.moneyanalysis.service;
 
 import com.metea.moneyanalysis.domain.OperationDetail;
-import com.metea.moneyanalysis.dto.OperationDetailReadDTO;
+import com.metea.moneyanalysis.dto.OperationDetailSearchCriteriaDTO;
 import com.metea.moneyanalysis.dto.OperationDetailWriteDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface OperationDetailService {
     List<OperationDetail> getAllMonthly(Long masterId);
 
     Page<OperationDetail> getAllRecordByUser();
+
+    Page<OperationDetail> search(OperationDetailSearchCriteriaDTO filter, Pageable pageable);
 }

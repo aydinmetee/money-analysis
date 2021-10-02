@@ -4,6 +4,7 @@ import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.OperationDetail;
 import com.metea.moneyanalysis.domain.OperationMaster;
 import com.metea.moneyanalysis.domain.UserDetail;
+import com.metea.moneyanalysis.dto.OperationMasterSearchCriteriaDTO;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import com.metea.moneyanalysis.repository.OperationMasterRepository;
 import com.metea.moneyanalysis.service.OperationMasterService;
@@ -85,8 +86,8 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     }
 
     @Override
-    public Page<OperationMaster> search(Pageable pageable) {
-        return operationMasterRepository.findAll(pageable);
+    public Page<OperationMaster> search(OperationMasterSearchCriteriaDTO filter, Pageable pageable) {
+        return operationMasterRepository.findAll(filter.OperationMasterSearchCriteriaFieldMapper(filter), pageable);
     }
 
     private UserDetail findUser(Long id) {
