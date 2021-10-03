@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Api(value = "/users")
 public class UserController {
-
     private final UserServiceView userService;
 
     @GetMapping("/{id}")
