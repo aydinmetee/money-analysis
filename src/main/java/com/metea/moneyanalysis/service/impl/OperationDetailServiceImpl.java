@@ -10,6 +10,7 @@ import com.metea.moneyanalysis.repository.OperationMasterRepository;
 import com.metea.moneyanalysis.service.OperationDetailService;
 import com.metea.moneyanalysis.service.OperationMasterService;
 import com.metea.moneyanalysis.service.UserService;
+import com.metea.moneyanalysis.util.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,13 +30,14 @@ public class OperationDetailServiceImpl implements OperationDetailService {
     private final OperationMasterRepository operationMasterRepository;
     private final OperationMasterService operationMasterService;
     private final UserService userService;
+    private final MessageUtil messageUtil;
 
     @Override
     public OperationDetail save(OperationDetailWriteDTO operationDetailWriteDTO) {
         final var master = operationMasterRepository
                 .findById(operationDetailWriteDTO.getMasterId());
         if (master.isEmpty()) {
-            throw new IllegalArgumentException("User Not Found!");
+            throw new ServiceExecutionException(messageUtil.get("operationMaster.notFound.exception"));
         }
         final var operationDetail = new OperationDetail();
         operationDetail.setCreatedBy("Admin");
@@ -55,16 +57,17 @@ public class OperationDetailServiceImpl implements OperationDetailService {
     public OperationDetail getById(Long id) {
         final var operationDetail = operationDetailRepository.findById(id);
         if (operationDetail.isEmpty()) {
-            throw new ServiceExecutionException("Operation Not Found!");
+            throw new ServiceExecutionException(messageUtil.get("operationDetail.notFound.exception"));
         }
         return operationDetail.get();
     }
 
     @Override
     public List<OperationDetail> getAllByMasterId(Long masterId) {
-        final var operationDetails = operationDetailRepository.findOperationDetailsByOperationMasterId(masterId);
+        final var operationDetails = operationDetailRepository
+                .findOperationDetailsByOperationMasterId(masterId);
         if (operationDetails.isEmpty()) {
-            throw new ServiceExecutionException("User have not operation!");
+            throw new ServiceExecutionException(messageUtil.get("operationDetail.notFoundForMaster.exception"));
         }
         return operationDetails;
     }
@@ -98,7 +101,7 @@ public class OperationDetailServiceImpl implements OperationDetailService {
         final var details = operationDetailRepository.findAllByOperationMasterId(
                 PageRequest.of(0, 100, Sort.by("createdAt").descending()), masterId);
         if (!details.hasContent()) {
-            throw new ServiceExecutionException("Kayıt bulunamadı.");
+            throw new ServiceExecutionException(messageUtil.get("operationDetail.notFoundForMaster.exception"));
         }
         return details;
     }
@@ -108,7 +111,7 @@ public class OperationDetailServiceImpl implements OperationDetailService {
         final var details = operationDetailRepository
                 .findAll(filter.OperationMasterSearchCriteriaFieldMapper(filter), pageable);
         if (!details.hasContent()) {
-            throw new ServiceExecutionException("Kayıt bulunamadı.");
+            throw new ServiceExecutionException(messageUtil.get("operationDetail.notFound.exception"));
         }
         return details;
     }

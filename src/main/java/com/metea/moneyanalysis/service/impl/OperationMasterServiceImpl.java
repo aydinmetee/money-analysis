@@ -10,6 +10,7 @@ import com.metea.moneyanalysis.exception.ServiceExecutionException;
 import com.metea.moneyanalysis.repository.OperationMasterRepository;
 import com.metea.moneyanalysis.service.OperationMasterService;
 import com.metea.moneyanalysis.service.UserService;
+import com.metea.moneyanalysis.util.MessageUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -26,12 +27,14 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     private final OperationMasterRepository operationMasterRepository;
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final MessageUtil messageUtil;
 
     public OperationMasterServiceImpl(OperationMasterRepository operationMasterRepository,
-                                      @Lazy UserService userService, ModelMapper modelMapper) {
+                                      @Lazy UserService userService, ModelMapper modelMapper, MessageUtil messageUtil) {
         this.operationMasterRepository = operationMasterRepository;
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.messageUtil = messageUtil;
     }
 
     @Override
@@ -49,7 +52,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     public OperationMaster getById(Long id) {
         final var operationMaster = operationMasterRepository.findById(id);
         if (operationMaster.isEmpty()) {
-            throw new ServiceExecutionException("Operation Not Found!");
+            throw new ServiceExecutionException(messageUtil.get("operationMaster.notFound.exception"));
         }
         return operationMaster.get();
     }
@@ -59,7 +62,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
         final var operationMaster = operationMasterRepository
                 .findOperationMasterByUserDetailId(userService.getSessionInfo().getId());
         if (Objects.isNull(operationMaster)) {
-            throw new ServiceExecutionException("User have not operation!");
+            throw new ServiceExecutionException(messageUtil.get("operationMaster.notFoundForUser.exception"));
         }
         return operationMaster;
     }
@@ -69,7 +72,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
         final var operationMaster = operationMasterRepository
                 .findById(operationDetail.getOperationMaster().getId());
         if (operationMaster.isEmpty()) {
-            throw new ServiceExecutionException("Kullanıcı bulunamadı");
+            throw new ServiceExecutionException(messageUtil.get("operationMaster.notFound.exception"));
         }
         if (operationDetail.getOperationType().equals(OperationDetail.OperationType.INCOME)) {
             operationMaster.get().setTotalAmount(operationMaster.get().getTotalAmount().add(operationDetail.getValue()));
@@ -94,7 +97,7 @@ public class OperationMasterServiceImpl implements OperationMasterService {
     private UserDetail findUser(Long id) {
         final var userDTO = userService.getById(id);
         if (Objects.isNull(userDTO)) {
-            throw new ServiceExecutionException("User Not Found!");
+            throw new ServiceExecutionException(messageUtil.get("userService.notFound.exception"));
         }
         final var user = new UserDetail();
         modelMapper.map(userDTO, user);

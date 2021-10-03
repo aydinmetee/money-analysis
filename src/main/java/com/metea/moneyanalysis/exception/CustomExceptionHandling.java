@@ -15,4 +15,10 @@ public class CustomExceptionHandling extends ResponseEntityExceptionHandler {
         ExceptionResponse response = new ExceptionResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
     }
+
+    @ExceptionHandler(LoginExecutionException.class)
+    public ResponseEntity<Object> handleExceptions(LoginExecutionException exception, WebRequest webRequest) {
+        ExceptionResponse response = new ExceptionResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
 }

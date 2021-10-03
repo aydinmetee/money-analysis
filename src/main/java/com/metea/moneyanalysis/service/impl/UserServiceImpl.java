@@ -5,6 +5,7 @@ import com.metea.moneyanalysis.domain.UserDetail;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import com.metea.moneyanalysis.dto.UserLoginDTO;
 import com.metea.moneyanalysis.dto.UserWriteDTO;
+import com.metea.moneyanalysis.exception.LoginExecutionException;
 import com.metea.moneyanalysis.exception.ServiceExecutionException;
 import com.metea.moneyanalysis.repository.UserRepository;
 import com.metea.moneyanalysis.service.OperationMasterService;
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserService {
     public Boolean login(UserLoginDTO userLoginDTO) {
         final var userDB = userRepository.findByUsername(userLoginDTO.getUsername());
         if (Objects.isNull(userDB)) {
-            throw new ServiceExecutionException("Username not found!");
+            throw new LoginExecutionException(messageUtil.get("loginService.notFound.exception"));
         }
         return userDB.getPassword().equals(userLoginDTO.getPassword());
     }
