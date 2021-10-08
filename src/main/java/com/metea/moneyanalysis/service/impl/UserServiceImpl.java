@@ -1,6 +1,5 @@
 package com.metea.moneyanalysis.service.impl;
 
-import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.UserDetail;
 import com.metea.moneyanalysis.dto.OperationMasterWriteDTO;
 import com.metea.moneyanalysis.dto.UserLoginDTO;
@@ -35,7 +34,6 @@ public class UserServiceImpl implements UserService {
         modelMapper.map(userWriteDTO, userDB);
         userDB.setCreatedBy("Admin");
         userDB.setCreatedAt(new Date());
-        userDB.setStatus(BaseEntity.Status.NEW);
         userDB = userRepository.save(userDB);
         CreateOperationMasterForNewUser(userDB.getId());
         return userDB;

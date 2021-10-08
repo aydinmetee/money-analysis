@@ -1,6 +1,5 @@
 package com.metea.moneyanalysis.dto;
 
-import com.metea.moneyanalysis.domain.BaseEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +16,5 @@ public class UserReadDTO {
     private String username;
     private String nameSurname;
     private String email;
-    private BaseEntity.Status status;
     private Date creDate;
 }

@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode()
+@EqualsAndHashCode(callSuper = true)
 public class OperationDetailSearchCriteriaDTO extends OperationDetailReadDTO {
 
     public SearchCriteriaOptions<OperationDetail> OperationMasterSearchCriteriaFieldMapper(OperationDetailSearchCriteriaDTO filter) {

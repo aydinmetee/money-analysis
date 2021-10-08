@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 public class BaseEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -22,10 +22,5 @@ public class BaseEntity implements Serializable {
     private Date updatedAt;
     @Column(name = "updated_by", length = 100)
     private String updatedBy;
-    @Column(name = "status")
-    private Status status;
 
-    public enum Status{
-        NEW,COMPLETED
-    }
 }

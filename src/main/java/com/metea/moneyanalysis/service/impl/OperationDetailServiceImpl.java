@@ -42,7 +42,6 @@ public class OperationDetailServiceImpl implements OperationDetailService {
         final var operationDetail = new OperationDetail();
         operationDetail.setCreatedBy("Admin");
         operationDetail.setCreatedAt(new Date());
-        operationDetail.setStatus(BaseEntity.Status.NEW);
         operationDetail.setOperationType(operationDetailWriteDTO.getOperationType());
         operationDetail.setValue(operationDetailWriteDTO.getValue());
         operationDetail.setDescription(operationDetailWriteDTO.getDescription());

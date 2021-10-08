@@ -1,6 +1,5 @@
 package com.metea.moneyanalysis.service.impl;
 
-import com.metea.moneyanalysis.domain.BaseEntity;
 import com.metea.moneyanalysis.domain.OperationDetail;
 import com.metea.moneyanalysis.domain.OperationMaster;
 import com.metea.moneyanalysis.domain.UserDetail;
@@ -43,7 +42,6 @@ public class OperationMasterServiceImpl implements OperationMasterService {
         operationMaster.setUserDetail(findUser(operationMasterWriteDTO.getUserId()));
         operationMaster.setCreatedBy("Admin");
         operationMaster.setCreatedAt(new Date());
-        operationMaster.setStatus(BaseEntity.Status.NEW);
         operationMaster.setTotalAmount(BigDecimal.ZERO);
         return operationMasterRepository.save(operationMaster);
     }
